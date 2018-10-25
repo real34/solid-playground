@@ -2,6 +2,7 @@ import $ from "jquery";
 import auth from "solid-auth-client";
 import $rdf from "rdflib";
 
+const DEFAULT_PROFILE = "https://ruben.verborgh.org/profile/#me";
 $("#logout").hide();
 
 const popupUri = "popup.html";
@@ -13,13 +14,15 @@ auth.trackSession(session => {
   const loggedIn = !!session;
 
   $("#login").toggle(!loggedIn);
-  $(".logout").toggle(loggedIn);
+  $("#logout").toggle(loggedIn);
 
   if (session) {
     $("#user").text(session.webId);
-    if (!$("#profile").val()) {
+    if (!$("#profile").val() || $("#profile").val() === DEFAULT_PROFILE) {
       $("#profile").val(session.webId);
     }
+  } else {
+    $("#profile").val(DEFAULT_PROFILE);
   }
 });
 
