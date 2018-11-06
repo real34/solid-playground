@@ -1,50 +1,61 @@
-import React, { useState, useEffect } from "react";
-import { render } from "react-dom";
+import React from 'react';
+import { render } from 'react-dom';
+import {
+  LoggedOut,
+  LoggedIn,
+  AuthButton,
+  Value,
+  Image,
+  Link,
+  Name,
+  List
+} from '@solid/react';
 
-import useSolidAuth from "./useSolidAuth";
-import Login from "./Login";
-import Logout from "./Logout";
-import FoafProfile from "./FoafProfile";
+const App = () => (
+  <div>
+    <h1>Solid words</h1>
 
-const TestApp = () => {
-  const [webId, { login, logout }] = useSolidAuth();
+    <p>
+      <LoggedIn>Yeah!</LoggedIn>
+      <LoggedOut>Please log in</LoggedOut>
+    </p>
 
-  const [profileOpened, setProfileOpened] = useState(false);
-  const handleRefresh = () => setProfileOpened(true);
+    <AuthButton />
 
-  const [person, setPerson] = useState(
-    "https://ruben.verborgh.org/profile/#me"
-  );
-  const handleChange = e => setPerson(e.target.value.trim());
-  useEffect(() => setPerson(webId), [webId]);
+    <LoggedIn>
+      <p>
+        Welcome back, <Value src="user.firstName" />
+      </p>
+      <Image src="user.image" defaultSrc="profile.svg" className="pic" />
+      <ul>
+        <li>
+          <Link href="user.inbox">Your inbox</Link>
+        </li>
+        <li>
+          <Link href="user.homepage">Your homepage</Link>
+        </li>
+      </ul>
 
-  console.log({ person });
-  return (
-    <div>
-      <h1>Welcome on the Solid playground</h1>
+      <h2>
+        Random friend of <Name src="user" />
+      </h2>
+      <Value src="user.friends.firstName" />
+    </LoggedIn>
 
-      {webId ? (
-        <Logout onClick={logout}>{webId}</Logout>
-      ) : (
-        <Login onClick={login} />
-      )}
+    <h2>
+      Random friend of <Name src="[https://ruben.verborgh.org/profile/#me]" />
+    </h2>
+    <Value src="[https://ruben.verborgh.org/profile/#me].friends.firstName" />
 
-      <div>
-        <h2>Profile viewer</h2>
-        <p>
-          <label htmlFor="profile">Profile: </label>
-          <input
-            placeholder="https://me.com/profile/card#me"
-            value={person || ""}
-            onChange={handleChange}
-          />
-          <button onClick={handleRefresh}>Refresh</button>
-        </p>
+    <h2>All friends</h2>
+    <List src="[https://ruben.verborgh.org/profile/#me].friends.firstName" />
 
-        {profileOpened && <FoafProfile person={person} />}
-      </div>
-    </div>
-  );
-};
+    <h2>Random blog post</h2>
+    <Link href="[https://ruben.verborgh.org/profile/#me].blog[schema:blogPost]" />
 
-render(<TestApp />, document.querySelector("#app"));
+    <h2>All blog posts</h2>
+    <List src="[https://ruben.verborgh.org/profile/#me].blog[schema:blogPost].label" />
+  </div>
+);
+
+render(<App />, document.getElementById('app'));
