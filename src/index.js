@@ -1,59 +1,50 @@
-import $ from "jquery";
-import auth from "solid-auth-client";
-import $rdf from "rdflib";
+import React, { useState, useEffect } from "react";
+import { render } from "react-dom";
 
-const DEFAULT_PROFILE = "https://ruben.verborgh.org/profile/#me";
-$("#logout").hide();
+import useSolidAuth from "./useSolidAuth";
+import Login from "./Login";
+import Logout from "./Logout";
+import FoafProfile from "./FoafProfile";
 
-const popupUri = "popup.html";
-$("#login button").click(() => auth.popupLogin({ popupUri }));
-$("#logout button").click(() => auth.logout());
+const TestApp = () => {
+  const [webId, { login, logout }] = useSolidAuth();
 
-auth.trackSession(session => {
-  console.log({ session });
-  const loggedIn = !!session;
+  const [profileOpened, setProfileOpened] = useState(false);
+  const handleRefresh = () => setProfileOpened(true);
 
-  $("#login").toggle(!loggedIn);
-  $("#logout").toggle(loggedIn);
+  const [person, setPerson] = useState(
+    "https://ruben.verborgh.org/profile/#me"
+  );
+  const handleChange = e => setPerson(e.target.value.trim());
+  useEffect(() => setPerson(webId), [webId]);
 
-  if (session) {
-    $("#user").text(session.webId);
-    if (!$("#profile").val() || $("#profile").val() === DEFAULT_PROFILE) {
-      $("#profile").val(session.webId);
-    }
-  } else {
-    $("#profile").val(DEFAULT_PROFILE);
-  }
-});
+  console.log({ person });
+  return (
+    <div>
+      <h1>Welcome on the Solid playground</h1>
 
-const FOAF = $rdf.Namespace("http://xmlns.com/foaf/0.1/");
-$("#view").click(async function loadProfile() {
-  // Set up a local data store and associated data fetcher
-  const store = $rdf.graph();
-  const fetcher = new $rdf.Fetcher(store);
+      {webId ? (
+        <Logout onClick={logout}>{webId}</Logout>
+      ) : (
+        <Login onClick={login} />
+      )}
 
-  // Load the person's data into the store
-  const person = $("#profile").val();
-  await fetcher.load(person);
+      <div>
+        <h2>Profile viewer</h2>
+        <p>
+          <label htmlFor="profile">Profile: </label>
+          <input
+            placeholder="https://me.com/profile/card#me"
+            value={person || ""}
+            onChange={handleChange}
+          />
+          <button onClick={handleRefresh}>Refresh</button>
+        </p>
 
-  // Display their details
-  const fullName = store.any($rdf.sym(person), FOAF("name"));
-  $("#fullName").text(fullName && fullName.value);
+        {profileOpened && <FoafProfile person={person} />}
+      </div>
+    </div>
+  );
+};
 
-  const friends = store.each($rdf.sym(person), FOAF("knows"));
-  $("#friends").empty();
-  friends.forEach(async friend => {
-    await fetcher.load(friend);
-    const fullName = store.any(friend, FOAF("name"));
-    console.log({ fullName, friend });
-    $("#friends").append(
-      $("<li>").append(
-        $("<a>")
-          .attr("href", "#")
-          .text((fullName && fullName.value) || friend.value)
-          .click(() => $("#profile").val(friend.value))
-          .click(loadProfile)
-      )
-    );
-  });
-});
+render(<TestApp />, document.querySelector("#app"));
