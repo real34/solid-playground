@@ -20,7 +20,7 @@ const App = () => (
       <LoggedOut>Please log in</LoggedOut>
     </p>
 
-    <AuthButton />
+    <AuthButton popup="solid/login.html" />
 
     <LoggedIn>
       <p>
