@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack",
+    "build": "webpack --mode=production",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist -u 'Automated deployment <deploy@example.com>'"
   },

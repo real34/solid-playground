@@ -47,5 +47,7 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  // see https://www.npmjs.com/package/@solid/react#configuring-webpack
+  externals: require('@solid/react/webpack/webpack.bundle.config').externals
 };
