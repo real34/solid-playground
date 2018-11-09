@@ -30,10 +30,10 @@ const Home = () => {
       </LoggedOut>
 
       <LoggedIn>
-        <p>
+        <Text my={5}>
           Welcome here <Name src="user" />!<br />
           What will you write today?
-        </p>
+        </Text>
         <Editor />
       </LoggedIn>
     </div>

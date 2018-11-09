@@ -39,8 +39,9 @@
   },
   "dependencies": {
     "@solid/react": "^1.1.2",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0",
+    "react": "^16.7.0-alpha.0",
+    "react-dom": "^16.7.0-alpha.0",
+    "react-textarea-autosize": "^7.1.0-1",
     "rebass": "^3.0.0-9",
     "styled-components": "^4.0.3"
   }
