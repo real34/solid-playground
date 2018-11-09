@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WriteFilePlugin = require("write-file-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 module.exports = {
   mode: "development",
@@ -31,7 +33,11 @@ module.exports = {
       appMountId: "app"
     }),
     new WriteFilePlugin(),
-    new CopyWebpackPlugin(["./public/"])
+    new CopyWebpackPlugin(["./public/"]),
+    new BundleAnalyzerPlugin({
+      analyzerHost: "0.0.0.0",
+      analyzerPort: "8888"
+    })
   ],
   output: {
     filename: "[name].bundle.js",
